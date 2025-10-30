@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+﻿import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useState } from "react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface LoginDialogProps {
   open: boolean;
@@ -64,7 +64,7 @@ export function LoginDialog({ open, onOpenChange, onSwitchToSignup }: LoginDialo
             <Input
               id="password"
               type="password"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="rounded-xl border-[var(--boho-taupe)]"
@@ -102,3 +102,4 @@ export function LoginDialog({ open, onOpenChange, onSwitchToSignup }: LoginDialo
     </Dialog>
   );
 }
+

@@ -1,6 +1,5 @@
 ﻿node_modules/
 dist/
 build/
-.tmp/
 .env
 .DS_Store

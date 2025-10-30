@@ -1,10 +1,10 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+﻿import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useState } from "react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface SignupDialogProps {
   open: boolean;
@@ -89,7 +89,7 @@ export function SignupDialog({ open, onOpenChange, onSwitchToLogin }: SignupDial
             <Input
               id="signup-password"
               type="password"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="rounded-xl border-[var(--boho-taupe)]"
@@ -162,3 +162,4 @@ export function SignupDialog({ open, onOpenChange, onSwitchToLogin }: SignupDial
     </Dialog>
   );
 }
+

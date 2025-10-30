@@ -1,10 +1,10 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+﻿import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface EventApplicationDialogProps {
   open: boolean;
@@ -146,3 +146,4 @@ export function EventApplicationDialog({ open, onOpenChange, eventTitle }: Event
     </Dialog>
   );
 }
+
