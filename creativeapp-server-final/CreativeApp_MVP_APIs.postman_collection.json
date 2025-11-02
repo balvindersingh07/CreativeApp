@@ -1,0 +1,119 @@
+{
+  "info": {
+    "name": "CreativeApp Server + MVP APIs",
+    "_postman_id": "11112222-3333-4444-aaaa-bbbbccccdddd",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "name": "Chat",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"hello from Postman\"\n}"
+        },
+        "url": "{{base_url}}/api/chat"
+      }
+    },
+    {
+      "name": "Creators - List",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/creators"
+      }
+    },
+    {
+      "name": "Creators - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"Tanvi\", \"businessName\": \"Tanvi Candles\", \"city\": \"Delhi\", \"pincode\": \"110001\", \"category\": \"Candles\", \"priceRange\": \"\\u20b9300-\\u20b91200\"}"
+        },
+        "url": "{{base_url}}/api/v1/creators"
+      }
+    },
+    {
+      "name": "Events - List",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/events"
+      }
+    },
+    {
+      "name": "Events - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Local Fair\", \"organizer\": \"Org\", \"city\": \"Delhi\", \"startDate\": \"2025-11-10\", \"endDate\": \"2025-11-12\", \"fee\": 1000, \"tags\": [\"Candles\", \"Art\"]}"
+        },
+        "url": "{{base_url}}/api/v1/events"
+      }
+    },
+    {
+      "name": "Matches - Run",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/v1/matches/run"
+      }
+    },
+    {
+      "name": "Matches - List",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/matches"
+      }
+    },
+    {
+      "name": "Applications - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"creatorId\": \"REPLACE\", \"eventId\": \"REPLACE\", \"status\": \"interested\"}"
+        },
+        "url": "{{base_url}}/api/v1/applications"
+      }
+    }
+  ]
+}

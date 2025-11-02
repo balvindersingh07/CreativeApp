@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
@@ -60,7 +60,7 @@ function ChartContainer({
         )}
         {...props}
       >
-        <ChartStyle id={chartId} config={config} />
+        <ChartStyle id={`chartId`} config={config} />
         <RechartsPrimitive.ResponsiveContainer>
           {children}
         </RechartsPrimitive.ResponsiveContainer>
@@ -351,4 +351,7 @@ export {
   ChartLegendContent,
   ChartStyle,
 };
+
+
+
 

@@ -1,0 +1,66 @@
+﻿name: Visual Smoke
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps (frontend)
+        run: npm ci
+        shell: powershell
+
+      - name: Start backend (demo)
+        run: |
+          cd creativeapp-server-final
+          npm ci
+          =8081
+          Start-Process -FilePath "cmd" -ArgumentList "/c npm run dev" -WindowStyle Hidden
+        shell: powershell
+
+      - name: Wait for backend
+        run: |
+          True=False
+          for (=0;  -lt 30; ++) {
+            try { if ((Invoke-RestMethod http://localhost:8081/health).ok) { True=True; break } } catch {}
+            Start-Sleep -Seconds 1
+          }
+          if (-not True) { Write-Error "Backend not ready"; exit 1 }
+        shell: powershell
+
+      - name: Start Vite
+        run: |
+          Start-Process -FilePath "cmd" -ArgumentList "/c npm run dev" -WindowStyle Hidden
+        shell: powershell
+
+      - name: Wait for Vite
+        run: |
+          True=False
+          for (=0;  -lt 30; ++) {
+            try { if ((Invoke-WebRequest -UseBasicParsing http://localhost:5173).StatusCode -eq 200) { True=True; break } } catch {}
+            Start-Sleep -Seconds 1
+          }
+          if (-not True) { Write-Error "Frontend not ready"; exit 1 }
+        shell: powershell
+
+      - name: Run visual smoke
+        run: npm run smoke
+        shell: powershell
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: _screenshots/**/*

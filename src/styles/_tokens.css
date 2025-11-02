@@ -1,0 +1,42 @@
+﻿:root{
+  --cc-bg:#f6efe8;
+  --cc-card:#fff7f2;
+  --cc-text:#3f3a37;
+  --cc-muted:#7a6f6a;
+  --cc-accent:#e47a63;
+  --cc-accent-600:#d4624a;
+  --cc-radius:16px;
+  --cc-gap:28px;
+}
+
+/* Containers / sections (apply in markup when needed) */
+.cc-container{max-width:1200px;margin-inline:auto;padding-inline:1rem}
+.cc-section{padding-block:var(--cc-gap)}
+
+/* Card hover (non-breaking) */
+.cc-card{background:var(--cc-card);border-radius:var(--cc-radius);
+  transition:transform .18s ease, box-shadow .18s ease}
+.cc-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.06)}
+
+/* Buttons (opt-in) */
+.cc-btn{background:var(--cc-accent);color:#fff;border-radius:9999px;
+  padding:.6rem 1.1rem;box-shadow:0 4px 10px rgba(228,122,99,.18);
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease}
+.cc-btn:hover{background:var(--cc-accent-600);transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(228,122,99,.28)}
+.cc-btn-ghost{color:var(--cc-accent);background:transparent;border:1px solid var(--cc-accent)}
+.cc-btn-ghost:hover{background:rgba(228,122,99,.08)}
+
+/* Headings underline (opt-in) */
+.cc-underline:after{content:"";display:block;width:56px;height:3px;margin-top:8px;
+  background:linear-gradient(90deg,var(--cc-accent),transparent);border-radius:3px}
+
+/* A11y + smoothing (global, subtle) */
+:focus-visible{outline:2px solid var(--cc-accent);outline-offset:2px}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* Subtle scrollbars */
+*{scrollbar-width:thin;scrollbar-color:var(--cc-accent) transparent}
+*::-webkit-scrollbar{height:8px;width:8px}
+*::-webkit-scrollbar-thumb{background:rgba(228,122,99,.45);border-radius:8px}
+*::-webkit-scrollbar-thumb:hover{background:rgba(228,122,99,.7)}

@@ -1,149 +1,115 @@
-﻿import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useRef } from "react";
 
-interface EventApplicationDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  eventTitle: string;
-}
+type Props = { open: boolean; onClose: () => void };
 
-export function EventApplicationDialog({ open, onOpenChange, eventTitle }: EventApplicationDialogProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    businessName: "",
-    description: "",
-  });
+export default function EventApplicationDialog({ open, onClose }: Props) {
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.businessName) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    if (open) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
 
-    toast.success(`Application submitted for ${eventTitle}! We'll be in touch soon.`);
-    onOpenChange(false);
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      businessName: "",
-      description: "",
-    });
-  };
+  if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg rounded-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-['Playfair_Display'] text-[var(--boho-brown)]">
-            Apply to Event
-          </DialogTitle>
-          <DialogDescription className="text-[var(--boho-brown)]/70">
-            {eventTitle}
-          </DialogDescription>
-        </DialogHeader>
+    <div
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="apply-title"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      style={overlay}
+    >
+      <div ref={panelRef} style={panel}>
+        {/* Header */}
+        <div style={topbar}>
+          <button onClick={onClose} style={backBtn} aria-label="Back to main page"> Back</button>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="app-name" className="text-[var(--boho-brown)]">
-              Your Name *
-            </Label>
-            <Input
-              id="app-name"
-              type="text"
-              placeholder="Sarah Martinez"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)]"
-              required
-            />
+          <div style={{ display:"flex", alignItems:"center", gap:10, justifySelf:"center" }}>
+            <div style={logo}>T</div>
+            <h2 id="apply-title" style={title}>Apply to Event</h2>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="app-email" className="text-[var(--boho-brown)]">
-              Email *
-            </Label>
-            <Input
-              id="app-email"
-              type="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)]"
-              required
-            />
+          <button onClick={onClose} style={closeBtn} aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6L6 18M6 6l12 12" stroke="#374151" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div style={body}>
+          <div style={grid2}>
+            <div>
+              <label style={label}>Your Name *</label>
+              <input style={input} placeholder="Sarah Martinez" />
+            </div>
+            <div>
+              <label style={label}>Email *</label>
+              <input style={input} placeholder="your@email.com" />
+            </div>
+            <div>
+              <label style={label}>Phone Number</label>
+              <input style={input} placeholder="(555) 123-4567" />
+            </div>
+            <div>
+              <label style={label}>Business Name *</label>
+              <input style={input} placeholder="Your Creative Business" />
+            </div>
+            <div>
+              <label style={label}>Preferred Stall Size</label>
+              <select style={input}>
+                <option>Select stall size</option>
+                <option>Small (6x6)</option>
+                <option>Medium (8x8)</option>
+                <option>Large (10x10)</option>
+              </select>
+            </div>
+            <div>
+              <label style={label}>Category</label>
+              <select style={input}>
+                <option>Select category</option>
+                <option>Pottery</option>
+                <option>Home Decor</option>
+                <option>Textiles</option>
+              </select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="app-phone" className="text-[var(--boho-brown)]">
-              Phone Number
-            </Label>
-            <Input
-              id="app-phone"
-              type="tel"
-              placeholder="(555) 123-4567"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)]"
-            />
+          <div>
+            <label style={label}>Tell us about your products</label>
+            <textarea style={textarea} placeholder="Describe what you'll be selling at this event..." />
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="app-business" className="text-[var(--boho-brown)]">
-              Business Name *
-            </Label>
-            <Input
-              id="app-business"
-              type="text"
-              placeholder="Your Creative Business"
-              value={formData.businessName}
-              onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)]"
-              required
-            />
+        {/* Footer */}
+        <div style={footer}>
+          <small style={{ opacity:.75 }}>We'll review your application and reach out via email.</small>
+          <div style={{ display:"flex", gap:10 }}>
+            <button onClick={onClose} style={ghostBtn}>Back</button>
+            <button style={cta}>Apply</button>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="app-description" className="text-[var(--boho-brown)]">
-              Tell us about your products
-            </Label>
-            <Textarea
-              id="app-description"
-              placeholder="Describe what you'll be selling at this event..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)] min-h-24"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1 rounded-full border-[var(--boho-taupe)] text-[var(--boho-brown)]"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1 rounded-full bg-[var(--boho-terracotta)] hover:bg-[var(--boho-brown)]"
-            >
-              Submit Application
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </div>
   );
 }
 
+/* ------- styles ------- */
+const TERRACOTTA = "#D4745E";
+const overlay: React.CSSProperties = { position:"fixed", inset:0, background:"rgba(0,0,0,.45)", display:"grid", placeItems:"center", zIndex:9999, padding:16 };
+const panel: React.CSSProperties   = { width:"min(980px,96vw)", maxHeight:"92vh", overflow:"auto", background:"#fff", borderRadius:16, boxShadow:"0 30px 80px rgba(0,0,0,.35)" };
+const topbar: React.CSSProperties  = { display:"grid", gridTemplateColumns:"120px 1fr 44px", alignItems:"center", gap:8, padding:"14px 16px", position:"sticky", top:0, background:"#fff", borderTopLeftRadius:16, borderTopRightRadius:16, borderBottom:"1px solid #f2f2f2", zIndex:1 };
+const backBtn: React.CSSProperties = { justifySelf:"start", border:"1px solid #eee", background:"#fff", color:"#374151", padding:"8px 12px", borderRadius:10, cursor:"pointer", fontWeight:600 };
+const closeBtn: React.CSSProperties= { width:36, height:36, borderRadius:10, border:"1px solid #eee", background:"#fff", cursor:"pointer", display:"grid", placeItems:"center" };
+const logo: React.CSSProperties    = { width:28, height:28, borderRadius:8, background:TERRACOTTA, color:"#fff", display:"grid", placeItems:"center", fontWeight:800 };
+const title: React.CSSProperties   = { fontSize:22, margin:0, color:"#1f2937" };
+const body: React.CSSProperties    = { padding:"16px 16px 4px", display:"grid", gap:16 };
+const grid2: React.CSSProperties   = { display:"grid", gap:16, gridTemplateColumns:"1fr 1fr" };
+const label: React.CSSProperties   = { fontSize:14, marginBottom:6, display:"block", color:"#4b5563" };
+const input: React.CSSProperties   = { width:"100%", height:44, borderRadius:12, border:"1px solid #e5e7eb", padding:"0 12px", background:"#fff" };
+const textarea: React.CSSProperties= { ...input, height:140, padding:"10px 12px", resize:"vertical" };
+const footer: React.CSSProperties  = { display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px 16px", borderTop:"1px solid #f1f5f9", background:"#fff", borderBottomLeftRadius:16, borderBottomRightRadius:16 };
+const ghostBtn: React.CSSProperties= { ...backBtn, padding:"10px 14px", borderRadius:12 };
+const cta: React.CSSProperties     = { background:TERRACOTTA, color:"#fff", border:"none", padding:"10px 16px", borderRadius:12, fontWeight:700, cursor:"pointer" };

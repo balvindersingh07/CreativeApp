@@ -103,3 +103,6 @@ export function Hero({ onGetStarted }: HeroProps) {
     </section>
   );
 }
+
+
+

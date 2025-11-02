@@ -4,8 +4,8 @@ import { Card } from "./ui/card";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Calendar, MapPin, Users, Filter } from "lucide-react";
 import { useState } from "react";
-import { EventApplicationDialog } from "./EventApplicationDialog";
-import { StallRequestDialog } from "./StallRequestDialog";
+import EventApplicationDialog from "./EventApplicationDialog";
+import StallRequestDialog from "./StallRequestDialog";
 
 export function EventFeed() {
   const [selectedCity, setSelectedCity] = useState("All");
@@ -214,3 +214,6 @@ export function EventFeed() {
     </section>
   );
 }
+
+
+

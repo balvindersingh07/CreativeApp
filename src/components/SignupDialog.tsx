@@ -1,4 +1,4 @@
-﻿import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -89,7 +89,7 @@ export function SignupDialog({ open, onOpenChange, onSwitchToLogin }: SignupDial
             <Input
               id="signup-password"
               type="password"
-              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+              placeholder="••••••••"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="rounded-xl border-[var(--boho-taupe)]"
@@ -162,4 +162,7 @@ export function SignupDialog({ open, onOpenChange, onSwitchToLogin }: SignupDial
     </Dialog>
   );
 }
+
+
+
 

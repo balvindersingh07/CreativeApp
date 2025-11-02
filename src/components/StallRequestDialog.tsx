@@ -1,136 +1,94 @@
-﻿import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect } from "react";
 
-interface StallRequestDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  eventTitle: string;
-}
+type Props = { open: boolean; onClose: () => void };
 
-export function StallRequestDialog({ open, onOpenChange, eventTitle }: StallRequestDialogProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    stallSize: "",
-    specialRequirements: "",
-  });
+export default function StallRequestDialog({ open, onClose }: Props) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    if (open) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.stallSize) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    toast.success(`Stall request submitted for ${eventTitle}! We'll confirm availability soon.`);
-    onOpenChange(false);
-    setFormData({
-      name: "",
-      email: "",
-      stallSize: "",
-      specialRequirements: "",
-    });
-  };
+  if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="font-['Playfair_Display'] text-[var(--boho-brown)]">
-            Request a Stall
-          </DialogTitle>
-          <DialogDescription className="text-[var(--boho-brown)]/70">
-            {eventTitle}
-          </DialogDescription>
-        </DialogHeader>
+    <div aria-modal="true" role="dialog" onClick={(e)=>{ if(e.target===e.currentTarget) onClose(); }} style={overlay}>
+      <div style={panel}>
+        <div style={topbar}>
+          <button onClick={onClose} style={backBtn} aria-label="Back to main page"> Back</button>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="stall-name" className="text-[var(--boho-brown)]">
-              Your Name *
-            </Label>
-            <Input
-              id="stall-name"
-              type="text"
-              placeholder="Your name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)]"
-              required
-            />
+          <div style={{ display:"flex", alignItems:"center", gap:10, justifySelf:"center" }}>
+            <div style={logo}>T</div>
+            <h2 style={title}>Request Stall</h2>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="stall-email" className="text-[var(--boho-brown)]">
-              Email *
-            </Label>
-            <Input
-              id="stall-email"
-              type="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)]"
-              required
-            />
+          <button onClick={onClose} style={closeBtn} aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6L6 18M6 6l12 12" stroke="#374151" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div style={body}>
+          <div style={grid2}>
+            <div>
+              <label style={label}>Your Name *</label>
+              <input style={input} placeholder="Your name" />
+            </div>
+            <div>
+              <label style={label}>Email *</label>
+              <input style={input} placeholder="your@email.com" />
+            </div>
+            <div>
+              <label style={label}>Stall Size</label>
+              <select style={input}>
+                <option>Select stall size</option>
+                <option>Small (6x6)</option>
+                <option>Medium (8x8)</option>
+                <option>Large (10x10)</option>
+              </select>
+            </div>
+            <div>
+              <label style={label}>Power / Amenities</label>
+              <select style={input}>
+                <option>Choose option</option>
+                <option>No power</option>
+                <option>Power outlet</option>
+              </select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="stall-size" className="text-[var(--boho-brown)]">
-              Stall Size *
-            </Label>
-            <Select value={formData.stallSize} onValueChange={(value) => setFormData({ ...formData, stallSize: value })}>
-              <SelectTrigger className="rounded-xl border-[var(--boho-taupe)]">
-                <SelectValue placeholder="Select stall size" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="small">Small (10x10 ft) - $150</SelectItem>
-                <SelectItem value="medium">Medium (10x15 ft) - $225</SelectItem>
-                <SelectItem value="large">Large (10x20 ft) - $300</SelectItem>
-                <SelectItem value="premium">Premium Corner (15x15 ft) - $375</SelectItem>
-              </SelectContent>
-            </Select>
+          <div>
+            <label style={label}>Special Requirements</label>
+            <textarea style={textarea} placeholder="Power outlet, extra tables, etc." />
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="stall-requirements" className="text-[var(--boho-brown)]">
-              Special Requirements
-            </Label>
-            <Textarea
-              id="stall-requirements"
-              placeholder="Power outlet, extra tables, etc."
-              value={formData.specialRequirements}
-              onChange={(e) => setFormData({ ...formData, specialRequirements: e.target.value })}
-              className="rounded-xl border-[var(--boho-taupe)] min-h-20"
-            />
+        <div style={footer}>
+          <small style={{ opacity:.75 }}>Organizer will confirm availability & pricing on email.</small>
+          <div style={{ display:"flex", gap:10 }}>
+            <button onClick={onClose} style={ghostBtn}>Back</button>
+            <button style={cta}>Request Stall</button>
           </div>
-
-          <div className="flex gap-3 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1 rounded-full border-[var(--boho-taupe)] text-[var(--boho-brown)]"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1 rounded-full bg-[var(--boho-sage)] hover:bg-[var(--boho-brown)] text-white"
-            >
-              Request Stall
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </div>
   );
 }
 
+const TERRACOTTA = "#D4745E";
+const overlay: React.CSSProperties = { position:"fixed", inset:0, background:"rgba(0,0,0,.45)", display:"grid", placeItems:"center", zIndex:9999, padding:16 };
+const panel: React.CSSProperties   = { width:"min(980px,96vw)", maxHeight:"92vh", overflow:"auto", background:"#fff", borderRadius:16, boxShadow:"0 30px 80px rgba(0,0,0,.35)" };
+const topbar: React.CSSProperties  = { display:"grid", gridTemplateColumns:"120px 1fr 44px", alignItems:"center", gap:8, padding:"14px 16px", position:"sticky", top:0, background:"#fff", borderTopLeftRadius:16, borderTopRightRadius:16, borderBottom:"1px solid #f2f2f2", zIndex:1 };
+const backBtn: React.CSSProperties = { justifySelf:"start", border:"1px solid #eee", background:"#fff", color:"#374151", padding:"8px 12px", borderRadius:10, cursor:"pointer", fontWeight:600 };
+const closeBtn: React.CSSProperties= { width:36, height:36, borderRadius:10, border:"1px solid #eee", background:"#fff", cursor:"pointer", display:"grid", placeItems:"center" };
+const logo: React.CSSProperties    = { width:28, height:28, borderRadius:8, background:TERRACOTTA, color:"#fff", display:"grid", placeItems:"center", fontWeight:800 };
+const title: React.CSSProperties   = { fontSize:22, margin:0, color:"#1f2937" };
+const body: React.CSSProperties    = { padding:"16px 16px 4px", display:"grid", gap:16 };
+const grid2: React.CSSProperties   = { display:"grid", gap:16, gridTemplateColumns:"1fr 1fr" };
+const label: React.CSSProperties   = { fontSize:14, marginBottom:6, display:"block", color:"#4b5563" };
+const input: React.CSSProperties   = { width:"100%", height:44, borderRadius:12, border:"1px solid #e5e7eb", padding:"0 12px", background:"#fff" };
+const textarea: React.CSSProperties= { ...input, height:140, padding:"10px 12px", resize:"vertical" };
+const footer: React.CSSProperties  = { display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px 16px", borderTop:"1px solid #f1f5f9", background:"#fff", borderBottomLeftRadius:16, borderBottomRightRadius:16 };
+const ghostBtn: React.CSSProperties= { ...backBtn, padding:"10px 14px", borderRadius:12 };
+const cta: React.CSSProperties     = { background:TERRACOTTA, color:"#fff", border:"none", padding:"10px 16px", borderRadius:12, fontWeight:700, cursor:"pointer" };

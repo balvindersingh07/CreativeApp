@@ -11,14 +11,22 @@ import { SignupDialog } from "./components/SignupDialog";
 import { LoginDialog } from "./components/LoginDialog";
 import { Toaster } from "./components/ui/sonner";
 import { useState } from "react";
+import Chatbot from "./components/Chatbot";
 
 export default function App() {
   const [signupOpen, setSignupOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const handleGetStarted = () => {
-    setSignupOpen(true);
-  };
+  const handleGetStarted = () => setSignupOpen(true);
+
+  const CHAT_ENABLED =
+    (String(import.meta.env.VITE_CHATBOT_ENABLED ?? "")
+      .toLowerCase()
+      .trim() === "true") && typeof window !== "undefined";
+
+  if (typeof window !== "undefined") {
+    console.log("CHAT_FLAG:", import.meta.env.VITE_CHATBOT_ENABLED, "->", CHAT_ENABLED);
+  }
 
   return (
     <div className="min-h-screen">
@@ -33,21 +41,26 @@ export default function App() {
         <CallToAction onJoinClick={handleGetStarted} />
       </main>
       <Footer />
-      
-      {/* Global Dialogs */}
-      <SignupDialog 
-        open={signupOpen} 
+
+      <SignupDialog
+        open={signupOpen}
         onOpenChange={setSignupOpen}
         onSwitchToLogin={() => setLoginOpen(true)}
       />
-      <LoginDialog 
-        open={loginOpen} 
+      <LoginDialog
+        open={loginOpen}
         onOpenChange={setLoginOpen}
         onSwitchToSignup={() => setSignupOpen(true)}
       />
-      
-      {/* Toast Notifications */}
+
       <Toaster position="top-right" richColors />
+
+      {/* Chatbot mounts only when flag is ON */}
+      {CHAT_ENABLED && <Chatbot />}
     </div>
   );
 }
+
+
+
+

@@ -1,4 +1,4 @@
-﻿import { Card } from "./ui/card";
+import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -42,7 +42,7 @@ export function CreatorGallery() {
       name: "Elena Rodriguez",
       craft: "Textile Artist",
       city: "Denver, CO",
-      bio: "Handwoven macramÃ© and natural fiber wall hangings",
+      bio: "Handwoven macramé and natural fiber wall hangings",
       image: "https://images.unsplash.com/photo-1710188091078-e1d92210b9fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGFydGlzdCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2MTc0MzExOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       likes: 356,
     },
@@ -68,7 +68,7 @@ export function CreatorGallery() {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="px-4 py-2 rounded-full bg-[var(--boho-sand)] text-[var(--boho-brown)] inline-block mb-4">
-            ðŸŽ¨ Meet the Makers
+            🎨 Meet the Makers
           </span>
           <h2 className="font-['Playfair_Display'] text-[var(--boho-brown)] mb-4">
             Featured Creators
@@ -178,4 +178,7 @@ export function CreatorGallery() {
     </section>
   );
 }
+
+
+
 

@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  createdAt DateTime @default(now())
+  threads   Thread[]
+}
+
+model Thread {
+  id        String    @id @default(cuid())
+  title     String?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  role      String   // 'user' | 'assistant'
+  content   String
+  createdAt DateTime  @default(now())
+  thread    Thread    @relation(fields: [threadId], references: [id])
+  threadId  String
+}
+
+model Creator {
+  id           String   @id @default(cuid())
+  name         String
+  businessName String?
+  phone        String?
+  email        String?
+  city         String?
+  pincode      String?
+  category     String?
+  bio          String?
+  imagesJson   String   @default("[]")
+  priceRange   String?
+  createdAt    DateTime @default(now())
+  listings     Listing[]
+  applications Application[]
+  matches      Match[]
+}
+
+model Event {
+  id         String   @id @default(cuid())
+  title      String
+  organizer  String?
+  city       String?
+  startDate  DateTime?
+  endDate    DateTime?
+  fee        Float?
+  tagsJson   String   @default("[]")
+  applyLink  String?
+  contact    String?
+  createdAt  DateTime @default(now())
+  applications Application[]
+  matches      Match[]
+}
+
+model Listing {
+  id         String   @id @default(cuid())
+  creator    Creator  @relation(fields: [creatorId], references: [id])
+  creatorId  String
+  title      String
+  imagesJson String   @default("[]")
+  price      Float?
+  stock      Int?     @default(0)
+  description String?
+  tags        String?
+  createdAt  DateTime @default(now())
+}
+
+model Application {
+  id         String   @id @default(cuid())
+  creator    Creator  @relation(fields: [creatorId], references: [id])
+  creatorId  String
+  event      Event    @relation(fields: [eventId], references: [id])
+  eventId    String
+  status     String   @default("interested") // interested | applied | selected | rejected
+  appliedAt  DateTime @default(now())
+}
+
+model Match {
+  id         String   @id @default(cuid())
+  creator    Creator  @relation(fields: [creatorId], references: [id])
+  creatorId  String
+  event      Event    @relation(fields: [eventId], references: [id])
+  eventId    String
+  score      Float    @default(0)
+  createdAt  DateTime @default(now())
+}
