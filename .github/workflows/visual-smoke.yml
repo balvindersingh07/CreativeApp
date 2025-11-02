@@ -2,12 +2,11 @@
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
+    branches: [ main ]
 
 jobs:
   smoke:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -18,48 +17,48 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install deps (frontend)
+      - name: Install Google Chrome (or Chromium)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable || sudo apt-get install -y chromium-browser
+
+      - name: Install frontend deps
         run: npm ci
-        shell: powershell
 
-      - name: Start backend (demo)
-        run: |
-          cd creativeapp-server-final
-          npm ci
-          =8081
-          Start-Process -FilePath "cmd" -ArgumentList "/c npm run dev" -WindowStyle Hidden
-        shell: powershell
+      - name: Install backend deps
+        working-directory: creativeapp-server-final
+        run: npm ci
 
-      - name: Wait for backend
+      - name: Start backend (port 8081)
+        working-directory: creativeapp-server-final
+        env:
+          PORT: 8081
         run: |
-          True=False
-          for (=0;  -lt 30; ++) {
-            try { if ((Invoke-RestMethod http://localhost:8081/health).ok) { True=True; break } } catch {}
-            Start-Sleep -Seconds 1
-          }
-          if (-not True) { Write-Error "Backend not ready"; exit 1 }
-        shell: powershell
+          nohup npm run dev >/dev/null 2>&1 &
+          # wait for /health
+          for i in {1..60}; do
+            curl -fsS http://localhost:8081/health && break || sleep 1
+          done
 
-      - name: Start Vite
+      - name: Start Vite (port 5173)
         run: |
-          Start-Process -FilePath "cmd" -ArgumentList "/c npm run dev" -WindowStyle Hidden
-        shell: powershell
-
-      - name: Wait for Vite
-        run: |
-          True=False
-          for (=0;  -lt 30; ++) {
-            try { if ((Invoke-WebRequest -UseBasicParsing http://localhost:5173).StatusCode -eq 200) { True=True; break } } catch {}
-            Start-Sleep -Seconds 1
-          }
-          if (-not True) { Write-Error "Frontend not ready"; exit 1 }
-        shell: powershell
+          nohup npm run dev >/dev/null 2>&1 &
+          # wait for dev server to respond
+          for i in {1..60}; do
+            curl -fsS http://localhost:5173 && break || sleep 1
+          done
 
       - name: Run visual smoke
-        run: npm run smoke
-        shell: powershell
+        env:
+          BROWSER: /usr/bin/google-chrome
+        run: |
+          if [ ! -x "" ]; then
+            export BROWSER=/usr/bin/chromium-browser
+          fi
+          pwsh -ExecutionPolicy Bypass -File ./tools/visual-smoke.ps1
 
       - name: Upload screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
