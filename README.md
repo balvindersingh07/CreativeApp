@@ -36,4 +36,4 @@ A React + Vite based marketplace for creators to showcase and apply for events &
 src/components/ui, assets/screenshots, public/
 
 ## License
-MIT — see LICENSE
+Team sharthi — see LICENSE
