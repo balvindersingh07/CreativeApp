@@ -50,6 +50,19 @@ export default function Events() {
   return (
     <div className="p-6 space-y-6">
       <h1 data-testid="pg-events" className="text-2xl font-semibold">Events</h1>
+  // --- client-side filters (brand-safe) ---
+  const [qCity, setQCity] = React.useState<string>("");
+  const [qCat,  setQCat]  = React.useState<string>("");
+  const [qDate, setQDate] = React.useState<string>(""); // YYYY-MM-DD
+
+  const filtered = React.useMemo(() => {
+    return (events || []).filter((e: any) => {
+      const okCity = qCity ? String(e.city || "").toLowerCase().includes(qCity.toLowerCase()) : true;
+      const okCat  = qCat  ? String(e.category || "").toLowerCase().includes(qCat.toLowerCase()) : true;
+      const okDate = qDate ? String(e.date || "").startsWith(qDate) : true;
+      return okCity && okCat && okDate;
+    });
+  }, [events, qCity, qCat, qDate]);
   <div className="flex flex-wrap gap-2 mb-4">
     <input className="border rounded-xl px-3 py-2" placeholder="Filter by city" value={qCity} onChange={e=>setQCity(e.target.value)} />
     <input className="border rounded-xl px-3 py-2" placeholder="Filter by category" value={qCat} onChange={e=>setQCat(e.target.value)} />
@@ -97,4 +110,5 @@ export default function Events() {
     </div>
   );
 }
+
 
