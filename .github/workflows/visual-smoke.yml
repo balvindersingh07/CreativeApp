@@ -16,34 +16,44 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
-      - name: Install Google Chrome (or Chromium)
+      # Reliable Google Chrome install on ubuntu-latest
+      - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable || sudo apt-get install -y chromium-browser
+          sudo apt-get install -y wget gnupg
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-linux-signing-keyring.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
-      - name: Install frontend deps
-        run: npm ci
-
+      # Backend deps + start (port 8081)
       - name: Install backend deps
         working-directory: creativeapp-server-final
         run: npm ci
 
-      - name: Start backend (port 8081)
+      - name: Start backend
         working-directory: creativeapp-server-final
         env:
           PORT: 8081
+          SELF_BASE: http://localhost:8081
         run: |
           nohup npm run dev >/dev/null 2>&1 &
-          # wait for /health
-          for i in {1..60}; do
+          for i in {1..90}; do
             curl -fsS http://localhost:8081/health && break || sleep 1
           done
 
-      - name: Start Vite (port 5173)
+      # Frontend deps + build + preview (serve on 5173)
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Start Vite preview (5173)
         run: |
-          nohup npm run dev >/dev/null 2>&1 &
-          # wait for dev server to respond
+          nohup npx vite preview --port 5173 --strictPort >/dev/null 2>&1 &
           for i in {1..60}; do
             curl -fsS http://localhost:5173 && break || sleep 1
           done
@@ -51,11 +61,7 @@ jobs:
       - name: Run visual smoke
         env:
           BROWSER: /usr/bin/google-chrome
-        run: |
-          if [ ! -x "" ]; then
-            export BROWSER=/usr/bin/chromium-browser
-          fi
-          pwsh -ExecutionPolicy Bypass -File ./tools/visual-smoke.ps1
+        run: pwsh -ExecutionPolicy Bypass -File ./tools/visual-smoke.ps1
 
       - name: Upload screenshots
         if: always()
