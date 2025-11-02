@@ -1,5 +1,11 @@
-﻿node_modules/
+﻿# env & local configs
+.env*
+creativeapp-server-final/.env*
+.vscode/
+
+# screenshots & CI artifacts
+_screenshots/
+
+# node & build
+node_modules/
 dist/
-build/
-.env
-.DS_Store
