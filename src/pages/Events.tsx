@@ -49,7 +49,13 @@ export default function Events() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Events</h1>
+      <h1 data-testid="pg-events" className="text-2xl font-semibold">Events</h1>
+  <div className="flex flex-wrap gap-2 mb-4">
+    <input className="border rounded-xl px-3 py-2" placeholder="Filter by city" value={qCity} onChange={e=>setQCity(e.target.value)} />
+    <input className="border rounded-xl px-3 py-2" placeholder="Filter by category" value={qCat} onChange={e=>setQCat(e.target.value)} />
+    <input className="border rounded-xl px-3 py-2" type="date" value={qDate} onChange={e=>setQDate(e.target.value)} />
+    {(qCity||qCat||qDate) && <button className="px-3 py-2 rounded-xl border" onClick={()=>{setQCity('');setQCat('');setQDate('')}}>Clear</button>}
+  </div>
 
       {/* Filters toolbar (brand-safe Tailwind utilities only) */}
       <div className="rounded-2xl shadow bg-white dark:bg-zinc-900 p-4 grid gap-3 md:grid-cols-5">
@@ -91,3 +97,4 @@ export default function Events() {
     </div>
   );
 }
+
