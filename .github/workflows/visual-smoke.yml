@@ -18,50 +18,75 @@ jobs:
           node-version: 20
           cache: npm
 
-      # Reliable Google Chrome install on ubuntu-latest
-      - name: Install Google Chrome
+      # Install Google Chrome from official repo; fall back to Chromium if needed
+      - name: Install Chrome/Chromium
         run: |
+          set -e
           sudo apt-get update
-          sudo apt-get install -y wget gnupg
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-linux-signing-keyring.gpg
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y wget gnupg ca-certificates
+          if ! command -v google-chrome >/dev/null 2>&1; then
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
+              | sudo gpg --dearmor -o /usr/share/keyrings/google-linux-signing-keyring.gpg
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+              | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable || true
+          fi
+          # Fallback to chromium if chrome not present
+          if ! command -v google-chrome >/dev/null 2>&1; then
+            sudo apt-get install -y chromium-browser || sudo apt-get install -y chromium || true
+          fi
+          which google-chrome || which chromium-browser || which chromium
 
-      # Backend deps + start (port 8081)
+      # Backend deps + start
       - name: Install backend deps
         working-directory: creativeapp-server-final
         run: npm ci
 
-      - name: Start backend
+      - name: Start backend (8081) and wait for /health
         working-directory: creativeapp-server-final
         env:
           PORT: 8081
           SELF_BASE: http://localhost:8081
         run: |
           nohup npm run dev >/dev/null 2>&1 &
-          for i in {1..90}; do
-            curl -fsS http://localhost:8081/health && break || sleep 1
+          for i in {1..120}; do
+            if curl -fsS http://localhost:8081/health >/dev/null; then
+              echo "backend up"
+              break
+            fi
+            sleep 1
           done
 
-      # Frontend deps + build + preview (serve on 5173)
+      # Frontend deps + build + preview (stable vs dev server)
       - name: Install frontend deps
         run: npm ci
 
       - name: Build frontend
         run: npm run build
 
-      - name: Start Vite preview (5173)
+      - name: Start Vite preview (5173) and wait
         run: |
           nohup npx vite preview --port 5173 --strictPort >/dev/null 2>&1 &
-          for i in {1..60}; do
-            curl -fsS http://localhost:5173 && break || sleep 1
+          for i in {1..90}; do
+            if curl -fsS http://localhost:5173 >/dev/null; then
+              echo "frontend up"
+              break
+            fi
+            sleep 1
           done
 
-      - name: Run visual smoke
-        env:
-          BROWSER: /usr/bin/google-chrome
-        run: pwsh -ExecutionPolicy Bypass -File ./tools/visual-smoke.ps1
+      - name: Run visual smoke (headless browser)
+        run: |
+          set -e
+          if [ -x /usr/bin/google-chrome ]; then
+            export BROWSER=/usr/bin/google-chrome
+          elif [ -x /usr/bin/chromium-browser ]; then
+            export BROWSER=/usr/bin/chromium-browser
+          else
+            export BROWSER=/usr/bin/chromium
+          fi
+          pwsh -ExecutionPolicy Bypass -File ./tools/visual-smoke.ps1
 
       - name: Upload screenshots
         if: always()
