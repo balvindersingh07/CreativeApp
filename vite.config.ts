@@ -1,4 +1,5 @@
-﻿import { defineConfig } from "vite";
+﻿// vite.config.ts
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -10,13 +11,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: { outDir: 'dist', 
+  build: {
+    outDir: "build",     // <- only once (Vercel will serve this)
     target: "esnext",
-    outDir: "build",
+    assetsDir: "assets",
+    emptyOutDir: true
   },
   server: {
     port: 5173,
     open: true,
   },
 });
-
