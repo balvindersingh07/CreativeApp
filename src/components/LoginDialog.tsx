@@ -1,108 +1,81 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { useState } from "react";
-import { toast } from "sonner";
+﻿{/* Overlay */}
+<div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
 
-interface LoginDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSwitchToSignup: () => void;
-}
+{/* Centered modal card */}
+<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div
+    className="
+      w-full max-w-lg rounded-3xl bg-white dark:bg-zinc-900
+      shadow-xl ring-1 ring-zinc-200/70 dark:ring-zinc-800
+    "
+  >
+    <div className="flex items-center justify-between px-6 pt-6">
+      <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+        Welcome Back
+      </h3>
+      <button
+        aria-label="Close"
+        onClick={onClose}
+        className="rounded-full p-1 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+      >
+        ×
+      </button>
+    </div>
 
-export function LoginDialog({ open, onOpenChange, onSwitchToSignup }: LoginDialogProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    <div className="px-6 pb-6 pt-4 space-y-4">
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        Login to access your creator dashboard
+      </p>
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        Email
+      </label>
+      <input
+        type="email"
+        placeholder="your@email.com"
+        className="
+          w-full rounded-xl border border-zinc-300 bg-white
+          px-4 py-2 text-zinc-900 placeholder-zinc-400
+          focus:outline-none focus:ring-2 focus:ring-[#E37A58] focus:border-[#E37A58]
+          dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-700
+        "
+      />
 
-    // Simulate login
-    toast.success("Welcome back! Login successful.");
-    onOpenChange(false);
-    setEmail("");
-    setPassword("");
-  };
+      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        Password
+      </label>
+      <input
+        type="password"
+        placeholder="••••••••"
+        className="
+          w-full rounded-xl border border-zinc-300 bg-white
+          px-4 py-2 text-zinc-900 placeholder-zinc-400
+          focus:outline-none focus:ring-2 focus:ring-[#E37A58] focus:border-[#E37A58]
+          dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-700
+        "
+      />
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="font-['Playfair_Display'] text-[var(--boho-brown)]">
-            Welcome Back
-          </DialogTitle>
-          <DialogDescription className="text-[var(--boho-brown)]/70">
-            Login to access your creator dashboard
-          </DialogDescription>
-        </DialogHeader>
+      <div className="mt-3 flex items-center justify-between">
+        <a className="text-sm text-zinc-500 hover:underline" href="#">
+          Forgot password?
+        </a>
+      </div>
 
-        <form onSubmit={handleLogin} className="space-y-6 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-[var(--boho-brown)]">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-xl border-[var(--boho-taupe)]"
-            />
-          </div>
+      <button
+        className="
+          mt-2 w-full rounded-2xl bg-[#E37A58] px-4 py-2 font-medium text-white
+          shadow hover:opacity-95 active:opacity-90
+        "
+      >
+        Login
+      </button>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-[var(--boho-brown)]">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-xl border-[var(--boho-taupe)]"
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <a href="#" className="text-[var(--boho-terracotta)] hover:underline">
-              Forgot password?
-            </a>
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full rounded-full bg-[var(--boho-terracotta)] hover:bg-[var(--boho-brown)]"
-          >
-            Login
-          </Button>
-
-          <div className="text-center">
-            <span className="text-[var(--boho-brown)]/70">Don't have an account? </span>
-            <button
-              type="button"
-              onClick={() => {
-                onOpenChange(false);
-                onSwitchToSignup();
-              }}
-              className="text-[var(--boho-terracotta)] hover:underline"
-            >
-              Sign up
-            </button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-
-
-
+      <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
+        Don’t have an account?{" "}
+        <a className="font-medium text-[#E37A58] hover:underline" href="#">
+          Sign up
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
