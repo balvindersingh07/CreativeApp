@@ -10,7 +10,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
+  build: { outDir: 'dist', 
     target: "esnext",
     outDir: "build",
   },
@@ -19,3 +19,4 @@ export default defineConfig({
     open: true,
   },
 });
+
