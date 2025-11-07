@@ -1,4 +1,4 @@
-import { Button } from "./ui/button";
+﻿import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { LoginDialog } from "./LoginDialog";
@@ -67,7 +67,11 @@ export function Header() {
             <a href="#dashboard" className="text-[var(--boho-brown)] hover:text-[var(--boho-terracotta)] transition-colors">
               Dashboard
             </a>
-          </nav>
+          
+      <a href="/about" className="hover:text-brand">About</a>
+      <a href="/why-us" className="hover:text-brand">Why Us</a>
+      <a href="/contact" className="hover:text-brand">Contact</a>
+    </nav>
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
@@ -152,6 +156,7 @@ export function Header() {
     </header>
   );
 }
+
 
 
 
