@@ -50,6 +50,15 @@ export default function Events() {
   return (
     <div className="p-6 space-y-6">
       <h1 data-testid="pg-events" className="text-2xl font-semibold">Events</h1>
+  <div className="mb-3">
+    <input
+      data-testid="ev-search"
+      className="border rounded-full px-4 py-2 w-full md:w-96"
+      placeholder="Search city or event…"
+      value={qQuery}
+      onChange={(e)=>setQQuery(e.target.value)}
+    />
+  </div>
   // --- client-side filters (brand-safe) ---
   const [qCity, setQCity] = React.useState<string>("");
   const [qCat,  setQCat]  = React.useState<string>("");
@@ -60,9 +69,9 @@ export default function Events() {
       const okCity = qCity ? String(e.city || "").toLowerCase().includes(qCity.toLowerCase()) : true;
       const okCat  = qCat  ? String(e.category || "").toLowerCase().includes(qCat.toLowerCase()) : true;
       const okDate = qDate ? String(e.date || "").startsWith(qDate) : true;
-      return okCity && okCat && okDate;
+      return okCity && okCat && okDate && okQ;
     });
-  }, [events, qCity, qCat, qDate]);
+  }, [events, qCity, qCat, qDate, qQuery]);
   <div className="flex flex-wrap gap-2 mb-4">
     <input className="border rounded-xl px-3 py-2" placeholder="Filter by city" value={qCity} onChange={e=>setQCity(e.target.value)} />
     <input className="border rounded-xl px-3 py-2" placeholder="Filter by category" value={qCat} onChange={e=>setQCat(e.target.value)} />
@@ -110,6 +119,7 @@ export default function Events() {
     </div>
   );
 }
+
 
 
 
