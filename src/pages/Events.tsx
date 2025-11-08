@@ -49,7 +49,35 @@ export default function Events() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Events</h1>
+      <h1 data-testid="pg-events" className="text-2xl font-semibold">Events</h1>
+  <div className="mb-3">
+    <input
+      data-testid="ev-search"
+      className="border rounded-full px-4 py-2 w-full md:w-96"
+      placeholder="Search city or event…"
+      value={qQuery}
+      onChange={(e)=>setQQuery(e.target.value)}
+    />
+  </div>
+  // --- client-side filters (brand-safe) ---
+  const [qCity, setQCity] = React.useState<string>("");
+  const [qCat,  setQCat]  = React.useState<string>("");
+  const [qDate, setQDate] = React.useState<string>(""); // YYYY-MM-DD
+
+  const filtered = React.useMemo(() => {
+    return (events || []).filter((e: any) => {
+      const okCity = qCity ? String(e.city || "").toLowerCase().includes(qCity.toLowerCase()) : true;
+      const okCat  = qCat  ? String(e.category || "").toLowerCase().includes(qCat.toLowerCase()) : true;
+      const okDate = qDate ? String(e.date || "").startsWith(qDate) : true;
+      return okCity && okCat && okDate && okQ;
+    });
+  }, [events, qCity, qCat, qDate, qQuery]);
+  <div className="flex flex-wrap gap-2 mb-4">
+    <input className="border rounded-xl px-3 py-2" placeholder="Filter by city" value={qCity} onChange={e=>setQCity(e.target.value)} />
+    <input className="border rounded-xl px-3 py-2" placeholder="Filter by category" value={qCat} onChange={e=>setQCat(e.target.value)} />
+    <input className="border rounded-xl px-3 py-2" type="date" value={qDate} onChange={e=>setQDate(e.target.value)} />
+    {(qCity||qCat||qDate) && <button className="px-3 py-2 rounded-xl border" onClick={()=>{setQCity('');setQCat('');setQDate('')}}>Clear</button>}
+  </div>
 
       {/* Filters toolbar (brand-safe Tailwind utilities only) */}
       <div className="rounded-2xl shadow bg-white dark:bg-zinc-900 p-4 grid gap-3 md:grid-cols-5">
@@ -91,3 +119,7 @@ export default function Events() {
     </div>
   );
 }
+
+
+
+
