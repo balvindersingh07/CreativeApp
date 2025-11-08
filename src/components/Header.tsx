@@ -67,11 +67,7 @@ export function Header() {
             <a href="#dashboard" className="text-[var(--boho-brown)] hover:text-[var(--boho-terracotta)] transition-colors">
               Dashboard
             </a>
-          
-      <a href="/about" className="hover:text-brand">About</a>
-      <a href="/why-us" className="hover:text-brand">Why Us</a>
-      <a href="/contact" className="hover:text-brand">Contact</a>
-    </nav>
+</nav>
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
@@ -156,6 +152,7 @@ export function Header() {
     </header>
   );
 }
+
 
 
 
